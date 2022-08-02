@@ -164,16 +164,18 @@ class Ec2Inventory(object):
 
         # Make sure that profile_name is not passed at all if not set
         # as pre 2.24 boto will fall over otherwise
-        if self.boto_profile:
-            if not hasattr(boto.ec2.EC2Connection, 'profile_name'):
-                self.fail_with_error("boto version must be >= 2.24 to use profile")
+        if self.boto_profile and not hasattr(
+            boto.ec2.EC2Connection, 'profile_name'
+        ):
+            self.fail_with_error("boto version must be >= 2.24 to use profile")
 
         # Cache
-        if self.args.refresh_cache:
+        if (
+            self.args.refresh_cache
+            or not self.args.refresh_cache
+            and not self.is_cache_valid()
+        ):
             self.do_api_calls_update_cache()
-        elif not self.is_cache_valid():
-            self.do_api_calls_update_cache()
-
         # Data to print
         if self.args.host:
             data_to_print = self.get_host_info()
@@ -194,9 +196,10 @@ class Ec2Inventory(object):
         if os.path.isfile(self.cache_path_cache):
             mod_time = os.path.getmtime(self.cache_path_cache)
             current_time = time()
-            if (mod_time + self.cache_max_age) > current_time:
-                if os.path.isfile(self.cache_path_index):
-                    return True
+            if (mod_time + self.cache_max_age) > current_time and os.path.isfile(
+                self.cache_path_index
+            ):
+                return True
 
         return False
 

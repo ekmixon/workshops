@@ -71,7 +71,7 @@ def dialog():
     job_template = message['callback_id']
     channel_id = message['channel']['id']
     user = message['user']['name']
-    return_data = ":white_check_mark: Received @{} ! I'm working on it!".format(user)
+    return_data = f":white_check_mark: Received @{user} ! I'm working on it!"
     result = slack_client.api_call(
      "chat.postMessage",
      channel=channel_id,

@@ -21,7 +21,7 @@ def get_job_template(template="Network-Validate-Traffic",
 
 
 def launch_job(template_uri, user_input, host_name='127.0.0.1', user_name='admin', pass_word='admin'):
-    url = "https://" + host_name + template_uri + "launch/"
+    url = f"https://{host_name}{template_uri}launch/"
     auth = HTTPBasicAuth(user_name, pass_word)
     headers = {'content-type': 'application/json'}
     payload = json.dumps(user_input)

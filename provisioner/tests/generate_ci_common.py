@@ -7,12 +7,18 @@ import string
 
 def main():
     change_id = os.getenv('WORKSHOPS_CHANGE_ID')
-    admin_password = ''.join(random.choice(string.ascii_lowercase) for i in range(12))
-    name_prefix_identifier = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
+    admin_password = ''.join(
+        random.choice(string.ascii_lowercase) for _ in range(12)
+    )
+
+    name_prefix_identifier = ''.join(
+        random.choice(string.ascii_lowercase) for _ in range(8)
+    )
+
     if change_id:
-        ec2_name_prefix = 'tqe-gating-%s-%s' % (change_id, name_prefix_identifier)
+        ec2_name_prefix = f'tqe-gating-{change_id}-{name_prefix_identifier}'
     else:
-        ec2_name_prefix = 'tqe-gating-%s' % name_prefix_identifier
+        ec2_name_prefix = f'tqe-gating-{name_prefix_identifier}'
     with open('provisioner/tests/ci-common.yml', 'w') as f:
         f.write("""---
 admin_password: %s
